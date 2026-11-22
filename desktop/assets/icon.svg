@@ -1,0 +1,34 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b4a7a"/>
+      <stop offset="1" stop-color="#12365c"/>
+    </linearGradient>
+  </defs>
+  <!-- 圆角方底 -->
+  <rect x="24" y="24" width="464" height="464" rx="104" fill="url(#bg)"/>
+
+  <!-- 左对比面板 -->
+  <rect x="96" y="150" width="130" height="212" rx="16" fill="#e8f1fb"/>
+  <rect x="118" y="182" width="86" height="14" rx="7" fill="#9bb7d4"/>
+  <rect x="118" y="214" width="66" height="14" rx="7" fill="#c3d6ea"/>
+  <rect x="118" y="246" width="86" height="14" rx="7" fill="#9bb7d4"/>
+  <rect x="118" y="278" width="52" height="14" rx="7" fill="#c3d6ea"/>
+  <rect x="118" y="310" width="74" height="14" rx="7" fill="#9bb7d4"/>
+
+  <!-- 右对比面板 -->
+  <rect x="286" y="150" width="130" height="212" rx="16" fill="#e8f1fb"/>
+  <rect x="308" y="182" width="86" height="14" rx="7" fill="#9bb7d4"/>
+  <rect x="308" y="214" width="66" height="14" rx="7" fill="#f0b64b"/>
+  <rect x="308" y="246" width="86" height="14" rx="7" fill="#9bb7d4"/>
+  <rect x="308" y="278" width="52" height="14" rx="7" fill="#f0b64b"/>
+  <rect x="308" y="310" width="74" height="14" rx="7" fill="#9bb7d4"/>
+
+  <!-- 中央钥匙 -->
+  <g transform="rotate(45 256 256)">
+    <circle cx="256" cy="206" r="54" fill="none" stroke="#39c6c0" stroke-width="26"/>
+    <rect x="243" y="246" width="26" height="150" rx="10" fill="#39c6c0"/>
+    <rect x="243" y="340" width="56" height="24" rx="8" fill="#39c6c0"/>
+    <rect x="243" y="376" width="42" height="22" rx="8" fill="#39c6c0"/>
+  </g>
+</svg>

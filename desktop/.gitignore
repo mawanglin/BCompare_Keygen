@@ -1,0 +1,13 @@
+# 构建产物（发布件放 Release，不入库）
+/dist/
+# 本地编译出的裸二进制
+/bckeygen
+/bckeygen-cli
+*.exe
+# 从 SVG 栅格化出的图标（由 build 脚本再生）
+/assets/icon.png
+# Windows 图标资源(由 build 脚本再生)
+cmd/bckeygen/*.syso
+/assets/icon.ico
+# Go 依赖 vendor（mac 离线构建用，本地 go mod vendor 生成，不入库）
+/vendor/
