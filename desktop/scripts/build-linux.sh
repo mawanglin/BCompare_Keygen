@@ -72,7 +72,64 @@ EOF
 chmod -R u=rwX,go=rX "$PKGROOT"
 DEB="$DIST/${PRETTY}-${VERSION}-linux-${ARCH}.deb"
 dpkg-deb --build --root-owner-group "$PKGROOT" "$DEB" >/dev/null
-echo "   安装版:   $DEB"
+echo "   安装版(deb): $DEB"
+
+# ---- RPM 安装版（需 rpmbuild）----
+if command -v rpmbuild >/dev/null 2>&1; then
+  echo ">> [4/5] 打 .rpm 安装包"
+  RB="$(mktemp -d)"
+  mkdir -p "$RB/SOURCES" "$RB/SPECS"
+  cp "$DIST/${PRETTY}-${VERSION}-linux-${ARCH}" "$RB/SOURCES/${APPNAME}"
+  cp assets/icon.png "$RB/SOURCES/${APPNAME}.png"
+  cp "$PKGROOT/usr/share/applications/${APPNAME}.desktop" "$RB/SOURCES/${APPNAME}.desktop"
+  cat > "$RB/SPECS/${APPNAME}.spec" <<SPEC
+%global debug_package %{nil}
+%global __strip /bin/true
+Name:    ${APPNAME}
+Version: ${VERSION}
+Release: 1
+Summary: Beyond Compare 5 注册码生成器（桌面版）
+License: MIT
+URL:     https://github.com/mawanglin/BCompare_Keygen
+BuildArch: ${ARCH}
+%description
+基于 Go + Fyne 的桌面小工具，为 Beyond Compare 5 生成注册密钥并修补内置公钥。Maintainer: Cob.
+%install
+install -Dm755 %{_sourcedir}/${APPNAME} %{buildroot}%{_bindir}/${APPNAME}
+install -Dm644 %{_sourcedir}/${APPNAME}.desktop %{buildroot}%{_datadir}/applications/${APPNAME}.desktop
+install -Dm644 %{_sourcedir}/${APPNAME}.png %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/${APPNAME}.png
+%files
+%{_bindir}/${APPNAME}
+%{_datadir}/applications/${APPNAME}.desktop
+%{_datadir}/icons/hicolor/512x512/apps/${APPNAME}.png
+SPEC
+  rpmbuild --define "_topdir $RB" -bb "$RB/SPECS/${APPNAME}.spec" >/dev/null 2>&1
+  cp "$RB"/RPMS/*/*.rpm "$DIST/${PRETTY}-${VERSION}-linux-${ARCH2:-x86_64}.rpm"
+  rm -rf "$RB"
+  echo "   安装版(rpm): $DIST/${PRETTY}-${VERSION}-linux-${ARCH2:-x86_64}.rpm"
+else
+  echo "   [跳过] 未找到 rpmbuild，不打 .rpm"
+fi
+
+# ---- AppImage 单文件免安装 ----
+APPIMAGETOOL="${APPIMAGETOOL:-$(command -v appimagetool || true)}"
+if [ -n "$APPIMAGETOOL" ]; then
+  echo ">> [5/5] 打 AppImage"
+  AD="$(mktemp -d)/AppDir"
+  mkdir -p "$AD/usr/bin" "$AD/usr/share/applications" "$AD/usr/share/icons/hicolor/512x512/apps"
+  cp "$DIST/${PRETTY}-${VERSION}-linux-${ARCH}" "$AD/usr/bin/${APPNAME}"
+  cp assets/icon.png "$AD/usr/share/icons/hicolor/512x512/apps/${APPNAME}.png"
+  cp assets/icon.png "$AD/${APPNAME}.png"; cp assets/icon.png "$AD/.DirIcon"
+  cp "$PKGROOT/usr/share/applications/${APPNAME}.desktop" "$AD/${APPNAME}.desktop"
+  cp "$AD/${APPNAME}.desktop" "$AD/usr/share/applications/${APPNAME}.desktop"
+  printf '#!/bin/sh\nHERE="$(dirname "$(readlink -f "$0")")"\nexec "$HERE/usr/bin/%s" "$@"\n' "$APPNAME" > "$AD/AppRun"
+  chmod +x "$AD/AppRun"
+  ( cd "$DIST" && ARCH=x86_64 "$APPIMAGETOOL" --appimage-extract-and-run "$AD" "${PRETTY}-${VERSION}-x86_64.AppImage" >/dev/null 2>&1 )
+  rm -rf "$(dirname "$AD")"
+  echo "   单文件(AppImage): $DIST/${PRETTY}-${VERSION}-x86_64.AppImage"
+else
+  echo "   [跳过] 未找到 appimagetool，不打 AppImage（设 APPIMAGETOOL=/path 指定）"
+fi
 
 echo ""
 echo ">> 完成。产物："

@@ -45,13 +45,17 @@ go test ./internal/keygen/
 ```bash
 bash scripts/build-linux.sh
 # 产物在 dist/linux/：
-#   BCompareKeygen-<ver>-linux-amd64        单文件版 GUI（双击即运行）
-#   BCompareKeygen-cli-<ver>-linux-amd64    单文件版 CLI
-#   BCompareKeygen-<ver>-linux-amd64.deb    安装版（带菜单项与图标）
+#   BCompareKeygen-<ver>-x86_64.AppImage    单文件免安装（双击即运行，跨发行版）
+#   BCompareKeygen-<ver>-linux-amd64        单文件 GUI（裸二进制）
+#   BCompareKeygen-cli-<ver>-linux-amd64    单文件 CLI
+#   BCompareKeygen-<ver>-linux-amd64.deb    安装版（Debian/Ubuntu/飞牛）
+#   BCompareKeygen-<ver>-linux-x86_64.rpm   安装版（Fedora/RHEL/openSUSE）
 ```
 
-构建依赖：Go 1.23+、gcc、X11/GL 开发库（`xorg-dev libgl1-mesa-dev`）、
-可选 `dpkg-deb`（打 .deb）与 `rsvg-convert`（栅格化图标）。
+构建依赖：Go 1.23+、gcc、X11/GL 开发库（`xorg-dev libgl1-mesa-dev`）；
+可选 `dpkg-deb`（.deb）、`rpmbuild`（.rpm）、`appimagetool`（AppImage，经
+`APPIMAGETOOL=/path` 或 PATH 提供）、`rsvg-convert`（栅格化图标）。
+AppImage 运行需系统有 FUSE。
 
 ### Windows
 
